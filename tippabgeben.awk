@@ -9,7 +9,7 @@ BEGIN {
   print "DONE!";
 }
 #--------------------------------------------------------------------------------------------
-function getMachtData(mid, hostid, guestid) {
+function getMatchData(mid, hostid, guestid) {
   if (LIVE_PLAY==1 || (LIVE_PLAY==0 && gamesTipCounter==0)) {
     print "-- mid match data " mid;
     matchData = soapGetMatchDataByTeams(hostid,guestid);
@@ -119,7 +119,7 @@ function tipGames() {
         mid = splitValue(matchid[0]);
         hid = splitIntValue(hostid[0]);
         gid = splitIntValue(guestid[0]);
-        getMachtData(mid, hid, gid);
+        getMatchData(mid, hid, gid);
         hgoals = calHostGoals(mid);
         ggoals = calGuestGoals(mid); 
         matchValues = mid ":" hgoals ":" ggoals;
@@ -149,13 +149,12 @@ function sendToBotLiga() {
       sendTip = sendTip "&result=" array[2] ":" array[3];
       sendTip = sendTip "\" "
       sendTip = sendTip "http://botliga.de/api/guess"
-      if(LIVE_PLAY==0) {
-         #system(sendTip);
-         print sendTip;
-      } else {
+      if(LIVE_PLAY==1) {
         system(sendTip);
       }
+      print sendTip >> "tipp.log";
     }
+    print "++++ " strftime("%Y-%m-%d %H:%m") >> "tipp.log";
   }
 }
 
