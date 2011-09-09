@@ -2,6 +2,7 @@ BEGIN {
   srand();
   MAX_POST_MATCHES = -1;
   LIVE_PLAY = 1; # 1 == LIVE RUN
+  OUTPUT_MATCH_ID = "14052";
 
   getGames();
   tipGames();
@@ -94,7 +95,7 @@ function getGames() {
     # testing 
     # "curl -sL 'http://botliga.de/api/matches/2011' > kicktipp_2011.json"
     # "curl -sL 'http://botliga.de/api/matches/2010'" | getline ligaGames
-    "less kicktipp_2010.json" | getline ligaGames
+    "less kicktipp_2011.json" | getline ligaGames
   } else {
     "curl -sL 'http://botliga.de/api/matches/2011'" | getline ligaGames
   }
@@ -115,7 +116,7 @@ function tipGames() {
     match(subLine,/"date":"[^"]*"/, datetime);
     date = substr(splitValue(datetime[0]),1,10);
     if(LIVE_PLAY==0 || (LIVE_PLAY==1 && date == strftime("%Y-%m-%d"))) {
-      if (length(splitValue(matchid[0])) > 0) {
+      if (length(splitValue(matchid[0])) > 0 && (LIVE_PLAY==1 || (LIVE_PLAY==0 && splitValue(matchid[0])==OUTPUT_MATCH_ID))) {
         mid = splitValue(matchid[0]);
         hid = splitIntValue(hostid[0]);
         gid = splitIntValue(guestid[0]);
