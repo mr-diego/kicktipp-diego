@@ -1,7 +1,7 @@
 BEGIN {
   srand();
-  MAX_POST_MATCHES = 9;
-  LIVE_PLAY = 0; # 1 == LIVE RUN
+  MAX_POST_MATCHES = -1;
+  LIVE_PLAY = 1; # 1 == LIVE RUN
 
   getGames();
   tipGames();
@@ -139,6 +139,7 @@ function splitIntValue(m) {
   return values[2];
 }
 function sendToBotLiga() {
+  print "START  Anz.:" gamesTipCounter " " strftime("%Y-%m-%d %H:%m");
   if (gamesTipCounter>0) { 
     maxPosts = MAX_POST_MATCHES == -1 ? gamesTipCounter : MAX_POST_MATCHES;
     for (i=1;i<=maxPosts; i++) {
