@@ -1,4 +1,5 @@
 BEGIN {
+  DMLIST=dmlist
   srand();
   MAX_POST_MATCHES = -1;
   LIVE_PLAY = 1; # 1 == LIVE RUN
@@ -44,7 +45,7 @@ function calHostGoals(mid) {
   } else if (hostMatchSplit[4] < hostMatchSplit[6]) {
     hostRetVal = int(rand()*1 + 0.5);
   } 
-  if (LIVE_PLAY==0 && gamesTipCounter==0) { print "-home " hostRetVal " " m[mid]; }
+  if (gamesTipCounter==0) { print "-home " hostRetVal " " m[mid]; }
   return hostRetVal;
 }
 function calGuestGoals(mid) {
@@ -54,7 +55,7 @@ function calGuestGoals(mid) {
   } else if (hostMatchSplit[4] < hostMatchSplit[6]) {
     hostRetVal = int(rand()*3 + 0.5);
   } 
-  if (LIVE_PLAY==0 && gamesTipCounter==0) { print "-guest " hostRetVal " " m[mid]; }
+  if (gamesTipCounter==0) { print "-guest " hostRetVal " " m[mid]; }
   return hostRetVal;
 }
 function soapGetLeagues() {
@@ -71,11 +72,12 @@ function soapGetMatchDataByGroupLeagueSaison(groupid, league, saison) {
     sub(/[<leagueSaison>]=leagueSaison=[^<]*/, ">"saison, line);
     soap_msg = soap_msg line;
   }
-  "curl -H \"Content-Type: text/xml; charset=utf-8\" \
+  curl = "curl -H \"Content-Type: text/xml; charset=utf-8\" \
   	-H \"SOAPAction:\" \
   	-d '" soap_msg "' \
-  	-X POST http://www.openligadb.de/Webservices/Sportsdata.asmx" | getline line;
-  print "SOAP: ", line;
+  	-X POST http://www.openligadb.de/Webservices/Sportsdata.asmx";
+  curl | getline line;
+  return line;
 }
 function soapGetMatchDataByTeams(team1, team2) {
   while ("less getMatchDataByTeams.soap" | getline line) {
@@ -83,11 +85,11 @@ function soapGetMatchDataByTeams(team1, team2) {
     sub(/[<teamID2>]=teamID2=[^<]*/, ">"team2, line);
     soap_msg = soap_msg line;
   }
-  
-  "curl -H \"Content-Type: text/xml; charset=utf-8\" \
-  	-H \"SOAPAction:\" \
-  	-d '" soap_msg "' \
-  	-X POST http://www.openligadb.de/Webservices/Sportsdata.asmx" | getline line;
+  curl = "curl -H \"Content-Type: text/xml; charset=utf-8\" \
+  		-H \"SOAPAction:\" \
+	  	-d '"soap_msg"' \
+	  	-X POST http://www.openligadb.de/Webservices/Sportsdata.asmx";
+  curl | getline line;
   return line;
 }
 function getGames() {
